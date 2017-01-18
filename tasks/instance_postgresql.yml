@@ -1,0 +1,62 @@
+- set_fact: tmp_postgres_dump_file="{{ project_sync_tmp_dir }}/_postgresql_{{ date_stamp }}.dump"
+
+- fail:
+    msg: 'if no host name is defined, db_source_name and db_target_name has to be different.'
+  when: source_host == '' and instance.db_source_name == instance.db_target_name
+
+- name: Create postgresql database local dump - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  shell: "pg_dump --no-owner {{ project_sync_postgresqldump_options }} {{ instance.db_target_name }} > {{ tmp_postgres_dump_file }}"
+  when: source_host == ''
+
+- name: Create postgresql database dump on remote host - {{ instance.name }}
+  shell: ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} 'su -l postgres -c "pg_dump --no-owner {{ project_sync_postgresqldump_options }} {{ instance.db_source_name }} > {{ tmp_postgres_dump_file }}"'
+  when: source_host != ''
+
+- name: Transfer database dump to host - {{ instance.name }}
+  command: scp {{ '-P ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }}:{{ tmp_postgres_dump_file }} {{ tmp_postgres_dump_file }}
+  when: source_host != ''
+
+- name: Drop database - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  postgresql_db:
+    name: '{{ instance.db_target_name }}'
+    state: absent
+  when: project_sync_recreate_db
+
+- name: Create database - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  postgresql_db:
+    name: '{{ instance.db_target_name }}'
+    owner: '{{ instance.db_target_owner }}'
+    state: present
+  when: project_sync_recreate_db
+
+- name: Run pre sql commands for PostgreSQL - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  command: psql -h localhost -d {{ instance.db_target_name }} -c "{{ item }}"
+  with_items: '{{ instance.pre_sql_commands | default([]) }}'
+
+- name: Import database dump - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  shell: pg_restore --role={{ instance.db_target_owner }} {{ project_sync_postgresqlrestore_options }} -d {{ instance.db_target_name }} {{ tmp_postgres_dump_file }}
+
+- name: Run post sql commands for PostgreSQL - {{ instance.name }}
+  become_user: postgres
+  become: yes
+  command: psql -h localhost -d {{ instance.db_target_name }} -c {{ item }}
+  with_items: '{{ instance.post_sql_commands | default([]) }}'
+
+- name: Cleanup remote tmp file - {{ instance.name }}
+  command: ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} rm {{ tmp_postgres_dump_file }}
+  when: source_host != ''
+
+- name: Cleanup local tmp file - {{ instance.name }}
+  file:
+    path: '{{ tmp_postgres_dump_file }}'
+    state: absent

@@ -1,0 +1,54 @@
+- set_fact: tmp_mysql_dump_file="{{ project_sync_tmp_dir }}/_mysql_{{ date_stamp }}.sql"
+
+- fail:
+    msg: 'if no host name is defined, db_source_name and db_target_name has to be different.'
+  when: source_host == '' and instance.db_source_name == instance.db_target_name
+
+- name: Create MySQL database local dump - {{ instance.name }}
+  mysql_db:
+    name: '{{ instance.db_target_name }}'
+    state: dump
+    target: '{{ tmp_mysql_dump_file }}'
+
+- name: Create MySQL database dump on remote host - {{ instance.name }}
+  command: ssh -l {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} "mysql_dump {{ project_sync_mysqldump_options }} {{ instance.db_source_name }} > {{ tmp_mysql_dump_file }}"
+  when: source_host != ''
+
+- name: Transfer database dump to host - {{ instance.name }}
+  command: scp {{ '-P ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }}:{{ tmp_mysql_dump_file }} {{ tmp_mysql_dump_file }}
+  when: source_host != ''
+
+- name: Drop database - {{ instance.name }}
+  mysql_db:
+    name: '{{ instance.db_target_name }}'
+    state: absent
+  when: project_sync_recreate_db
+
+- name: Create database - {{ instance.name }}
+  mysql_db:
+    name: '{{ instance.db_target_name }}'
+    state: present
+  when: project_sync_recreate_db
+
+- name: Run pre sql commands for MySQL - {{ instance.name }}
+  command: mysql redmine -e "{{ item }}"
+  with_items: '{{ instance.pre_sql_commands | default([]) }}'
+
+- name: Import database dump - {{ instance.name }}
+  mysql_db:
+    name: '{{ instance.db_target_name }}'
+    state: import
+    target: '{{ tmp_mysql_dump_file }}'
+
+- name: Run post sql commands for MySQL - {{ instance.name }}
+  command: mysql redmine -e "{{ item }}"
+  with_items: '{{ instance.post_sql_commands | default([]) }}'
+
+- name: Cleanup remote tmp file - {{ instance.name }}
+  command: ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} rm {{ tmp_mysql_dump_file }}
+  when: source_host != ''
+
+- name: Cleanup local tmp file - {{ instance.name }}
+  file:
+    path: '{{ tmp_mysql_dump_file }}'
+    state: absent

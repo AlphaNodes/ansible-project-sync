@@ -1,0 +1,14 @@
+# post sql commands already run with instance_DB.yml
+
+- name: Run post drush commands - {{ instance.name }}
+  command: "{{ drush_path }} {{ instance.drush_profile | default('') }} {{ item }}"
+  with_items: '{{ instance.post_drush_commands | default([]) }}'
+  when: drush_path != ''
+
+- name: Run post commands - {{ instance.name }}
+  become: "{{ item.become | default('false') }}"
+  become_user: '{{ item.become_user | default(omit) }}'
+  command: '{{ item.command }}'
+  args:
+    chdir: '{{ item.chdir | default(omit) }}'
+  with_items: '{{ instance.post_commands | default([]) }}'

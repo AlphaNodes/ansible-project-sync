@@ -1,0 +1,25 @@
+
+- name: Sync files from remote host - {{ instance.name }}
+  command: rsync {{ project_sync_remote_rync_options }} ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ instance.src_host }}:{{ instance.src_dir }} {{ instance.target_parent_dir }}/
+  register: sync_result
+  changed_when: sync_result.stdout_lines | length != 4
+  when: instance.src_host is defined and instance.src_host != ''
+
+- name: Sync files - {{ instance.name }}
+  command: rsync {{ project_sync_local_rync_options }} {{ instance.src_dir }} {{ instance.target_parent_dir }}/
+  register: sync_result
+  changed_when: sync_result.stdout_lines | length != 4
+  when: instance.src_host is not defined or instance.src_host == ''
+
+#  synchronize:
+#    mode: pull
+#    src: '{{ instance.target_dir }}/'
+#    dest: '{{ instance.src_dir }}'
+#    dest_port: '{{ instance.src_port | default(omit) }}'
+#    delete: yes
+#    recursive: yes
+#    archive: yes
+#    rsync_timeout: 10
+#    set_remote_user: no
+#    verify_host: no
+#  delegate_to: "{{ instance.src_host }}"
