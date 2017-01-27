@@ -21,8 +21,8 @@ project_sync_mysqldump_options: '--single-transaction --extended-insert=false'
 project_sync_postgresqldump_options: '-Fc'
 project_sync_postgresqlrestore_options: '-n public'
 
-project_sync_remote_rsync_options: '--delete -avze'
-project_sync_local_rsync_options: '--delete -av'
+project_sync_remote_rsync_options: '-avz --delete'
+project_sync_local_rsync_options: '-av --delete'
 
 project_sync_recreate_db: yes
 

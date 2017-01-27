@@ -1,6 +1,6 @@
 
 - name: Sync files from remote host - {{ instance.name }}
-  command: rsync {{ project_sync_remote_rsync_options }} ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ instance.src_host }}:{{ instance.src_dir }} {{ instance.target_parent_dir }}/
+  command: rsync {{ project_sync_remote_rsync_options }} {{ '-e "ssh -p ' + source_port|string + '" ' if source_port != '' else '' }}{{ instance.src_host }}:{{ instance.src_dir }} {{ instance.target_parent_dir }}/
   register: sync_result
   changed_when: sync_result.stdout_lines | length != 4
   when: instance.src_host is defined and instance.src_host != ''
