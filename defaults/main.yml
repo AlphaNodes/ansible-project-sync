@@ -16,7 +16,7 @@
 project_sync_instances: []
 
 # only used on remote hosts
-project_sync_mysqldump_options: '--single-transaction --extended-insert=false'
+project_sync_mysqldump_options: '--extended-insert=false --opt --single-transaction'
 
 project_sync_postgresqldump_options: '-Fc'
 project_sync_postgresqlrestore_options: '-n public'
