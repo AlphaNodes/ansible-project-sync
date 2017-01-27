@@ -4,6 +4,7 @@
   loop_control:
     loop_var: instance
   when: >
-    (project_sync_instance_name != '' and instance.name == project_sync_instance_name)
-    or (project_sync_instance_name == '' and project_sync_master and instance.run_on_sync_master is defined and instance.run_on_sync_master and project_sync_run_all_master)
-    or (project_sync_instance_name == '' and project_sync_client and instance.run_on_sync_client is defined and instance.run_on_sync_client and project_sync_run_all_client)
+    (project_sync_instance_name != '' and (instance.name == project_sync_instance_name))
+    or (project_sync_instance_name == '' and
+      ((project_sync_run_all_master == True and project_sync_master and instance.run_on_sync_master is defined and instance.run_on_sync_master == True)
+      or (project_sync_run_all_client == True and project_sync_client and instance.run_on_sync_client is defined and instance.run_on_sync_client == True)))
