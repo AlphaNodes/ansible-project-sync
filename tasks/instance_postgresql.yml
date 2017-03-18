@@ -7,7 +7,7 @@
 - name: Create postgresql database local dump - {{ instance.name }}
   become_user: postgres
   become: yes
-  shell: "pg_dump --no-owner {{ project_sync_postgresqldump_options }} {{ instance.db_target_name }} > {{ tmp_postgres_dump_file }}"
+  shell: "pg_dump --no-owner {{ project_sync_postgresqldump_options }} {{ instance.db_source_name }} > {{ tmp_postgres_dump_file }}"
   when: source_host == ''
 
 - name: Create postgresql database dump on remote host - {{ instance.name }}

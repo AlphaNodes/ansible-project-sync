@@ -9,6 +9,7 @@
     name: '{{ instance.db_source_name }}'
     state: dump
     target: '{{ tmp_mysql_dump_file }}'
+  when: source_host == ''
 
 - name: Create MySQL database dump on remote host - {{ instance.name }}
   command: ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} "mysqldump {{ project_sync_mysqldump_options }} {{ instance.db_source_name }} > {{ tmp_mysql_dump_file }}"
