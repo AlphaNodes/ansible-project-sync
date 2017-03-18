@@ -45,11 +45,11 @@
     state: import
     target: '{{ tmp_mysql_dump_file }}'
 
-- name: Run post sql commands for MySQL - {{ instance.name }}
-  command: mysql redmine -e "{{ item }}"
-  with_items: '{{ instance.post_sql_commands | default([]) }}'
-
 - name: Cleanup local tmp file - {{ instance.name }}
   file:
     path: '{{ tmp_mysql_dump_file }}'
     state: absent
+
+- name: Run post sql commands for MySQL - {{ instance.name }}
+  command: mysql redmine -e "{{ item }}"
+  with_items: '{{ instance.post_sql_commands | default([]) }}'
