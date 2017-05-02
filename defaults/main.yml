@@ -41,6 +41,9 @@ drush_path: /root/.composer/vendor/bin/drush
 
 # For replication (advanced)
 
+# set it to yes, if you want to skip replication settings
+project_sync_skip_replication: no
+
 # Can be used in replication environments. If this is set to yes, only instances with
 # run_on_sync_master: yes will run
 project_sync_master: no
