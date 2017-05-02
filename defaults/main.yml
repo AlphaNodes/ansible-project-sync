@@ -24,12 +24,16 @@ project_sync_postgresqlrestore_options: '-n public'
 project_sync_remote_rsync_options: '-avz --delete'
 project_sync_local_rsync_options: '-av --delete'
 
+project_sync_excludes:
+  - '*.journal'
+  - '.nfs*'
+
 project_sync_recreate_db: yes
 
 # use this directory to create temporarily database dump
 project_sync_tmp_dir: /tmp
 
-# have to be overwritten with --extra-vars "project_sync_instance_name=NAME"'
+# only run this instance
 project_sync_instance_name: ''
 
 # if you want to use post_drush_commands, you have to set the path to drush
