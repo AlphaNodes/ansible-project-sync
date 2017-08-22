@@ -35,7 +35,7 @@
   become: yes
   postgresql_db:
     name: '{{ instance.db_target_name }}'
-    owner: '{{ instance.db_target_owner }}'
+    owner: '{{ instance.db_target_owner | mandatory }}'
     state: present
   when: project_sync_recreate_db
 
@@ -48,7 +48,7 @@
 - name: Import database dump - {{ instance.name }}
   become_user: postgres
   become: yes
-  shell: pg_restore --role={{ instance.db_target_owner }} {{ project_sync_postgresqlrestore_options }} -d {{ instance.db_target_name }} {{ tmp_postgres_dump_file }}
+  shell: pg_restore --no-owner --username={{ instance.db_target_owner | mandatory }} --role={{ instance.db_target_owner }} {{ project_sync_postgresqlrestore_options }} -d {{ instance.db_target_name }} {{ tmp_postgres_dump_file }}
 
 - name: Cleanup local tmp file - {{ instance.name }}
   file:
@@ -58,5 +58,5 @@
 - name: Run post sql commands for PostgreSQL - {{ instance.name }}
   become_user: postgres
   become: yes
-  command: psql -h localhost -d {{ instance.db_target_name }} -c {{ item }}
+  command: psql -h localhost --username={{ instance.db_target_owner | mandatory }} -d {{ instance.db_target_name }} -c "{{ item }}"
   with_items: '{{ instance.post_sql_commands | default([]) }}'
