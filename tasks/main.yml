@@ -1,4 +1,4 @@
-- include: instance.yml
+- include_tasks: instance.yml
   tags: project-sync
   with_items: "{{ project_sync_instances | default([]) }}"
   loop_control:
