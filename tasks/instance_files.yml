@@ -17,7 +17,7 @@
     path: '{{ item.name }}'
     owner: '{{ item.owner }}'
     group: '{{ item.group }}'
-    recurse: no
+    recurse: yes
   with_items: '{{ target_dirs_permission | default([]) }}'
 
 #  synchronize:
