@@ -12,6 +12,14 @@
   changed_when: sync_result.stdout_lines | length != 4
   when: instance.src_host is not defined or instance.src_host == ''
 
+- name: Set permissions to directories - {{ instance.name }}
+  file:
+    path: '{{ item.name }}'
+    owner: '{{ item.owner }}'
+    group: '{{ item.group }}'
+    recurse: no
+  with_items: '{{ target_dirs_permission | default([]) }}'
+
 #  synchronize:
 #    mode: pull
 #    src: '{{ instance.target_dir }}/'
