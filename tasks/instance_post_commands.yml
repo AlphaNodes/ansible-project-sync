@@ -2,7 +2,7 @@
 
 - name: Run post drush commands - {{ instance.name }}
   command: "{{ drush_path }} {{ instance.drush_profile | default('') }} {{ item }}"
-  with_items: '{{ instance.post_drush_commands | default([]) }}'
+  loop: '{{ instance.post_drush_commands | default([]) }}'
   when: drush_path != ''
 
 - name: Run post commands - {{ instance.name }}
@@ -11,4 +11,4 @@
   command: '{{ item.command }}'
   args:
     chdir: '{{ item.chdir | default(omit) }}'
-  with_items: '{{ instance.post_commands | default([]) }}'
+  loop: '{{ instance.post_commands | default([]) }}'

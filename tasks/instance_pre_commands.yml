@@ -1,6 +1,6 @@
 - name: Run pre drush commands - {{ instance.name }}
   command: "{{ drush_path }} {{ instance.drush_profile | default('') }} {{ item }}"
-  with_items: '{{ instance.pre_drush_commands | default([]) }}'
+  loop: '{{ instance.pre_drush_commands | default([]) }}'
   when: drush_path != ''
 
 - name: Run pre commands - {{ instance.name }}
@@ -9,4 +9,4 @@
   command: '{{ item.command }}'
   args:
     chdir: '{{ item.chdir | default(omit) }}'
-  with_items: '{{ instance.pre_commands | default([]) }}'
+  loop: '{{ instance.pre_commands | default([]) }}'

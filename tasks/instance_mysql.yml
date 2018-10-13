@@ -37,7 +37,7 @@
 
 - name: Run pre sql commands for MySQL - {{ instance.name }}
   command: mysql {{ instance.db_target_name }} -e "{{ item }}"
-  with_items: '{{ instance.pre_sql_commands | default([]) }}'
+  loop: '{{ instance.pre_sql_commands | default([]) }}'
 
 - name: Import database dump - {{ instance.name }}
   mysql_db:
@@ -52,4 +52,4 @@
 
 - name: Run post sql commands for MySQL - {{ instance.name }}
   command: mysql {{ instance.db_target_name }} -e "{{ item }}"
-  with_items: '{{ instance.post_sql_commands | default([]) }}'
+  loop: '{{ instance.post_sql_commands | default([]) }}'

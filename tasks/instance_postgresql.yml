@@ -43,7 +43,7 @@
   become_user: postgres
   become: yes
   command: psql -h localhost -d {{ instance.db_target_name }} -c "{{ item }}"
-  with_items: '{{ instance.pre_sql_commands | default([]) }}'
+  loop: '{{ instance.pre_sql_commands | default([]) }}'
 
 - name: Import database dump - {{ instance.name }}
   become_user: postgres
@@ -59,4 +59,4 @@
   become_user: postgres
   become: yes
   command: psql -h localhost --username={{ instance.db_target_owner | mandatory }} -d {{ instance.db_target_name }} -c "{{ item }}"
-  with_items: '{{ instance.post_sql_commands | default([]) }}'
+  loop: '{{ instance.post_sql_commands | default([]) }}'

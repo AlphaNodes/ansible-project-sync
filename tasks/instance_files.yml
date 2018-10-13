@@ -18,7 +18,7 @@
     owner: '{{ item.owner }}'
     group: '{{ item.group }}'
     recurse: yes
-  with_items: '{{ instance.target_dirs_permission | default([]) }}'
+  loop: '{{ instance.target_dirs_permission | default([]) }}'
 
 #  synchronize:
 #    mode: pull
