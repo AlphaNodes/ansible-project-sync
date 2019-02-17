@@ -1,6 +1,7 @@
 ---
 - hosts: all
   vars:
+    project_sync_instance_name: etc-mirror-test
     project_sync_instances:
       - name: etc-mirror-test
         src_dir: /etc
