@@ -2,7 +2,7 @@
 
 Sync database (postgresql or mysql) and files between environments (e.g. production, staging etc.)
 
-[![Ansible Galaxy](https://img.shields.io/badge/galaxy-alphanodes.project--sync-660198.svg)](https://galaxy.ansible.com/AlphaNodes/ssh)
+[![Ansible Galaxy](https://img.shields.io/badge/galaxy-alphanodes.project--sync-660198.svg)](https://galaxy.ansible.com/AlphaNodes/project-sync)
 [![Build Status](https://travis-ci.org/AlphaNodes/ansible-project-sync.svg?branch=master)](https://travis-ci.org/AlphaNodes/ansible-project-sync)
 
 
