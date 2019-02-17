@@ -6,6 +6,13 @@
   changed_when: sync_result.stdout_lines | length != 4
   when: instance.src_host is defined and instance.src_host != ''
 
+- command: rsync --help
+  register: rsync_rc
+  ignore_errors: true
+
+- name: Output of sync
+  debug: var=rsync_rc
+
 - name: Sync files - {{ instance.name }}
   command: rsync {{ project_sync_local_rsync_options }} --exclude={{ sync_excludes | join(' --exclude=') | default('') }} {{ instance.src_dir }} {{ instance.target_parent_dir }}/
   register: sync_result
