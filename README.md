@@ -23,7 +23,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 ## Dependencies
 
-rsync and database packages (mysql or postgresql) of linux distribution
+none for file sync. If you want database sync, you need database packages (mysql or postgresql) of linux distribution
+
 
 ## Example Playbook
 

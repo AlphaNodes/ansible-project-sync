@@ -1,7 +1,11 @@
-- set_fact: date_stamp="{{ lookup('pipe','date +%Y%m%d%H%M') }}"
-- set_fact: source_host_backup="{{ instance.src_host | default('') }}"
-- set_fact: source_host="{{ instance.db_source_host | default(source_host_backup) }}"
-- set_fact: source_port="{{ instance.src_port | default('') }}"
+- name: Set date stamp
+  set_fact: date_stamp="{{ lookup('pipe','date +%Y%m%d%H%M') }}"
+- name: Set source host backup
+  set_fact: source_host_backup="{{ instance.src_host | default('') }}"
+- name: Set source host
+  set_fact: source_host="{{ instance.db_source_host | default(source_host_backup) }}"
+- name: Set source port
+  set_fact: source_port="{{ instance.src_port | default('') }}"
 
 - name: "Pre command include for {{ instance.name }}"
   include_tasks: instance_pre_commands.yml

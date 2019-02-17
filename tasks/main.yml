@@ -1,4 +1,9 @@
-- include_tasks: instance.yml
+- name: Include setup tasks
+  include_tasks: setup.yml
+  tags: project-sync
+
+- name: Include instance tasks
+  include_tasks: instance.yml
   tags: project-sync
   loop: "{{ project_sync_instances | default([]) }}"
   loop_control:
