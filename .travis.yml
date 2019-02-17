@@ -22,12 +22,10 @@ script:
   - ${PWD}/tests/test.sh
 
   # Check if backup files are  available.
-  - 'docker exec --tty ${container_id} bash -c ls /tmp/etc-mirror'
+  - 'docker exec --tty ${container_id} bash -c ls /tmp/etc'
 
 after_failure:
-  - 'docker exec --tty ${container_id} bash -c ls /etc'
-  - 'docker exec --tty ${container_id} bash -c ls /tmp'
-  - 'docker exec --tty ${container_id} bash -c ls /tmp/etc-mirror'
+  - 'docker exec --tty ${container_id} bash -c ls /tmp/etc'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
