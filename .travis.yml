@@ -25,7 +25,7 @@ script:
   - 'docker exec --tty ${container_id} bash -c ls /etc-mirror'
 
 after_failure:
-  - 'docker exec --tty ${container_id} env TERM=xterm ls /etc-mirror'
+  - 'docker exec --tty ${container_id} bash -c ls /etc-mirror'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
