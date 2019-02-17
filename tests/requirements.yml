@@ -1,7 +1,2 @@
 ---
-- hosts: all
-  tasks:
-    - name: install rsync
-      apt:
-        name: rsync
-        state: latest
+- src: geerlingguy.ansible
