@@ -25,6 +25,8 @@ script:
   - 'docker exec --tty ${container_id} bash -c ls /tmp/etc'
 
 after_failure:
+  - 'docker exec --tty ${container_id} bash -c ansible --version'
+  - 'docker exec --tty ${container_id} bash -c rsync --version'
   - 'docker exec --tty ${container_id} bash -c ls /tmp/etc'
 
 notifications:
