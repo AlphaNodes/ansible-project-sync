@@ -6,5 +6,10 @@
       - name: etc-mirror-test
         src_dir: /etc
         target_parent_dir: /tmp
+  tasks:
+    - name: install rsync
+      apt:
+        name: rsync
+        state: latest
   roles:
     - role_under_test
