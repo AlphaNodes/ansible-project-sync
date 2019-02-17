@@ -1,4 +1,4 @@
-- set_fact: sync_excludes="{{ instance.sync_excludes | default(project_sync_excludes)}}"
+- set_fact: sync_excludes="{{ instance.sync_excludes | default(project_sync_excludes) }}"
 
 - name: Sync files from remote host - {{ instance.name }}
   command: rsync {{ project_sync_remote_rsync_options }} --exclude={{ sync_excludes | join(' --exclude=') | default('') }} {{ '-e "ssh -p ' + source_port|string + '" ' if source_port != '' else '' }}{{ instance.src_host }}:{{ instance.src_dir }} {{ instance.target_parent_dir }}/

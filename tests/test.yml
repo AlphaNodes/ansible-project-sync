@@ -1,0 +1,9 @@
+---
+- hosts: all
+  vars:
+    project_sync_instances:
+      - name: etc-mirror-test
+        src_dir: /etc
+        target_parent_dir: /etc-mirror
+  roles:
+    - role_under_test

@@ -2,25 +2,46 @@
 
 Sync database (postgresql or mysql) and files between environments (e.g. production, staging etc.)
 
+[![Ansible Galaxy](https://img.shields.io/badge/galaxy-alphanodes.project--sync-660198.svg)](https://galaxy.ansible.com/AlphaNodes/ssh)
+[![Build Status](https://travis-ci.org/AlphaNodes/ansible-project-sync.svg?branch=master)](https://travis-ci.org/AlphaNodes/ansible-project-sync)
+
+
+## Installation
+
+### Ansible 2+
+
+Using ansible galaxy cli:
+
+```bash
+ansible-galaxy install alphanodes.project-sync
+```
+
+## Role Variables
+
+Available variables are listed below, along with default values (see `defaults/main.yml`):
+
+
 ## Dependencies
 
 rsync and database packages (mysql or postgresql) of linux distribution
 
 ## Example Playbook
 
-    - hosts: server-name
-      vars:
-        project_sync_instances:
-          - name: prod-staging
-            src_host: remote-prod.example.com
-            src_dir: /srv/store/files
-            target_parent_dir: /srv/store
-            db_type: postgresql
-            db_source_name: store
-            db_target_name: store
-            db_target_owner: store
-      roles:
-        - AlphaNodes.project-sync
+```yaml
+- hosts: server-name
+  vars:
+    project_sync_instances:
+      - name: prod-staging
+        src_host: remote-prod.example.com
+        src_dir: /srv/store/files
+        target_parent_dir: /srv/store
+        db_type: postgresql
+        db_source_name: store
+        db_target_name: store
+        db_target_owner: store
+  roles:
+    - AlphaNodes.project-sync
+```
 
 if you have defined more the one instance and you only want a specific one to run, use --extra-vars "project_sync_instance_name=NAME"'
 
