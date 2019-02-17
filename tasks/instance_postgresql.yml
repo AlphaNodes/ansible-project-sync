@@ -11,11 +11,15 @@
   when: source_host == ''
 
 - name: Create postgresql database dump on remote host - {{ instance.name }}
-  shell: ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} 'su -l postgres -c "pg_dump --no-owner {{ project_sync_postgresqldump_options }} {{ instance.db_source_name }} > {{ tmp_postgres_dump_file }}"'
+  shell: >
+    ssh {{ '-p ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }} 'su -l postgres -c "pg_dump --no-owner
+    {{ project_sync_postgresqldump_options }} {{ instance.db_source_name }} > {{ tmp_postgres_dump_file }}"'
   when: source_host != ''
 
 - name: Transfer database dump to host - {{ instance.name }}
-  command: scp {{ '-P ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }}:{{ tmp_postgres_dump_file }} {{ tmp_postgres_dump_file }}
+  command: >
+    scp {{ '-P ' + source_port + ' ' if source_port != '' else '' }}{{ source_host }}:{{ tmp_postgres_dump_file }}
+    {{ tmp_postgres_dump_file }}
   when: source_host != ''
 
 - name: Cleanup remote tmp file - {{ instance.name }}
@@ -48,7 +52,11 @@
 - name: Import database dump - {{ instance.name }}
   become_user: postgres
   become: yes
-  shell: pg_restore --no-owner --username={{ instance.db_target_owner | mandatory }} --role={{ instance.db_target_owner }} {{ project_sync_postgresqlrestore_options }} -d {{ instance.db_target_name }} {{ tmp_postgres_dump_file }}
+  shell: >
+    pg_restore --no-owner
+    --username={{ instance.db_target_owner | mandatory }}
+    --role={{ instance.db_target_owner }} {{ project_sync_postgresqlrestore_options }}
+    -d {{ instance.db_target_name }} {{ tmp_postgres_dump_file }}
 
 - name: Cleanup local tmp file - {{ instance.name }}
   file:
@@ -58,5 +66,8 @@
 - name: Run post sql commands for PostgreSQL - {{ instance.name }}
   become_user: postgres
   become: yes
-  command: psql -h localhost --username={{ instance.db_target_owner | mandatory }} -d {{ instance.db_target_name }} -c "{{ item }}"
+  command: >
+    psql -h localhost
+    --username={{ instance.db_target_owner | mandatory }}
+    -d {{ instance.db_target_name }} -c "{{ item }}"
   loop: '{{ instance.post_sql_commands | default([]) }}'
