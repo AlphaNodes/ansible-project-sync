@@ -7,7 +7,7 @@
     --exclude={{ sync_excludes | join(' --exclude=') | default('') }}
     {{ '-e "ssh -p ' + source_port|string + '" ' if source_port != '' else '' }}{{ instance.src_host }}:{{ instance.src_dir }}
     {{ instance.target_parent_dir }}/
-  become: "{{ instance.rsync_become | default('false') }}"
+  become: "{{ instance.rsync_become | default(false) }}"
   become_user: '{{ instance.rsync_become_user | default(omit) }}'
   register: sync_result
   changed_when: sync_result.stdout_lines | length != 4
@@ -18,7 +18,7 @@
     rsync {{ project_sync_local_rsync_options }}
     --exclude={{ sync_excludes | join(' --exclude=') | default('') }}
     {{ instance.src_dir }} {{ instance.target_parent_dir }}/
-  become: "{{ instance.rsync_become | default('false') }}"
+  become: "{{ instance.rsync_become | default(false) }}"
   become_user: '{{ instance.rsync_become_user | default(omit) }}'
   register: sync_result
   changed_when: sync_result.stdout_lines | length != 4
